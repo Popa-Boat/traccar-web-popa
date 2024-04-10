@@ -82,7 +82,7 @@ const BottomMenu = () => {
         navigate('/');
         break;
       case 'reports':
-        navigate('/reports/combined');
+        navigate('/reports/trip');
         break;
       case 'settings':
         navigate('/settings/preferences');
