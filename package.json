@@ -1,6 +1,6 @@
 {
-  "name": "popa-track",
-  "version": "6.0.0",
+  "name": "traccar",
+  "version": "6.1.0",
   "type": "module",
   "private": true,
   "dependencies": {
