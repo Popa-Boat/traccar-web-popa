@@ -8,7 +8,7 @@ import {
   formatDistance, formatSpeed, formatVolume, formatTime, formatNumericHours,
 } from '../common/util/formatter';
 import ReportFilter from './components/ReportFilter';
-import { useAttributePreference, usePreference } from '../common/util/preferences';
+import { useAttributePreference } from '../common/util/preferences';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';
 import ReportsMenu from './components/ReportsMenu';
@@ -41,7 +41,6 @@ const SummaryReportPage = () => {
   const distanceUnit = useAttributePreference('distanceUnit');
   const speedUnit = useAttributePreference('speedUnit');
   const volumeUnit = useAttributePreference('volumeUnit');
-  const hours12 = usePreference('twelveHourFormat');
 
   const [columns, setColumns] = usePersistedState('summaryColumns', ['startTime', 'distance', 'averageSpeed']);
   const [daily, setDaily] = useState(false);
@@ -88,24 +87,25 @@ const SummaryReportPage = () => {
   });
 
   const formatValue = (item, key) => {
+    const value = item[key];
     switch (key) {
       case 'deviceId':
-        return devices[item[key]].name;
+        return devices[value].name;
       case 'startTime':
-        return formatTime(item[key], 'date', hours12);
+        return formatTime(value, 'date');
       case 'startOdometer':
       case 'endOdometer':
       case 'distance':
-        return formatDistance(item[key], distanceUnit, t);
+        return formatDistance(value, distanceUnit, t);
       case 'averageSpeed':
       case 'maxSpeed':
-        return formatSpeed(item[key], speedUnit, t);
+        return value > 0 ? formatSpeed(value, speedUnit, t) : null;
       case 'engineHours':
-        return formatNumericHours(item[key], t);
+        return value > 0 ? formatNumericHours(value, t) : null;
       case 'spentFuel':
-        return formatVolume(item[key], volumeUnit, t);
+        return value > 0 ? formatVolume(value, volumeUnit, t) : null;
       default:
-        return item[key];
+        return value;
     }
   };
 

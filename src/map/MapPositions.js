@@ -5,7 +5,7 @@ import { useTheme } from '@mui/styles';
 import { map } from './core/MapView';
 import { formatTime, getStatusColor } from '../common/util/formatter';
 import { mapIconKey } from './core/preloadImages';
-import { useAttributePreference, usePreference } from '../common/util/preferences';
+import { useAttributePreference } from '../common/util/preferences';
 import { useCatchCallback } from '../reactHelper';
 
 const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleField }) => {
@@ -21,7 +21,6 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
   const selectedDeviceId = useSelector((state) => state.devices.selectedId);
 
   const mapCluster = useAttributePreference('mapCluster', true);
-  const hours12 = usePreference('twelveHourFormat');
   const directionType = useAttributePreference('mapDirection', 'selected');
 
   const createFeature = (devices, position, selectedPositionId) => {
@@ -32,17 +31,17 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
         showDirection = false;
         break;
       case 'all':
-        showDirection = true;
+        showDirection = position.course > 0;
         break;
       default:
-        showDirection = selectedPositionId === position.id;
+        showDirection = selectedPositionId === position.id && position.course > 0;
         break;
     }
     return {
       id: position.id,
       deviceId: position.deviceId,
       name: device.name,
-      fixTime: formatTime(position.fixTime, 'seconds', hours12),
+      fixTime: formatTime(position.fixTime, 'seconds'),
       category: mapIconKey(device.category),
       color: showStatus ? position.attributes.color || getStatusColor(device.status) : 'neutral',
       rotation: position.course,
